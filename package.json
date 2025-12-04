@@ -9,6 +9,8 @@
     "restart": "npm run build && sudo systemctl restart discordbot"
   },
   "dependencies": {
+    "@discordjs/rest": "^2.6.0",
+    "discord-api-types": "^0.38.36",
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
     "express": "^5.1.0"

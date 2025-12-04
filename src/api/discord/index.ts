@@ -7,7 +7,7 @@ export const discordRouter = Router()
 discordRouter.get('/', async (_req, res) => {
   try {
     const member = await fetchMember(userId)
-    res.json({
+    res.status(200).json({
       id: member.user.id,
       name: member.user.globalName,
       username: member.user.username,
@@ -34,14 +34,14 @@ discordRouter.get('/avatar', async (req, res) => {
       forceStatic: format !== 'gif'
     })
 
-    if ('r' in req.query) return res.redirect(avatarUrl)
+    if ('r' in req.query) return res.status(308).redirect(avatarUrl)
 
     const img = await fetch(avatarUrl)
     const buffer = Buffer.from(await img.arrayBuffer())
 
     res.setHeader('Content-Type', format === 'jpg' || format === 'jpeg' ? 'image/jpeg' : `image/${format}`)
     res.setHeader('Cache-Control', 'public, max-age=1800')
-    return res.send(buffer)
+    return res.status(200).send(buffer)
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Internal Server Error' })

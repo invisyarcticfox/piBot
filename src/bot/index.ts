@@ -1,9 +1,11 @@
 import 'dotenv/config'
-import { ActivityType, Client, GatewayIntentBits, type GuildMember } from 'discord.js'
+import { ActivityType, Client, GatewayIntentBits, type CommandInteraction, type GuildMember } from 'discord.js'
+import { handleCommands } from './commands'
 
-const token = process.env.BOT_TOKEN
-const guildId = '939964758805872650'
+export const token = process.env.BOT_TOKEN
+export const guildId = '939964758805872650'
 export const userId = '470193291053498369'
+export const botId = '1445620355711373436'
 export let lastOnline:string|null = null
 export const botStart = new Date(Date.now()).toLocaleString('en-GB', { timeZone: 'UTC' })
 
@@ -18,7 +20,7 @@ client.once('clientReady', () => {
     activities: [{
       type: ActivityType.Custom,
       name: 'custom status',
-      state: `Online since ${botStart.slice(0,-3)} UTC`
+      state: `Online since ${botStart.slice(0,-3).replace(', ', ' ')} UTC`
     }],
     status:'online'
   })
@@ -34,6 +36,11 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
   } else if (!onlineStatuses.includes(oldStatus) && onlineStatuses.includes(newStatus)) {
     lastOnline = null
   }
+})
+
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isChatInputCommand()) return
+  await handleCommands(interaction as CommandInteraction)
 })
 
 
