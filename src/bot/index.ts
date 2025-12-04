@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { ActivityType, Client, GatewayIntentBits, type CommandInteraction, type GuildMember } from 'discord.js'
+import { Client, GatewayIntentBits, ActivityType, type ChatInputCommandInteraction, type GuildMember } from 'discord.js'
 import { handleCommands } from './commands'
 
 export const token = process.env.BOT_TOKEN
@@ -40,7 +40,7 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return
-  await handleCommands(interaction as CommandInteraction)
+  await handleCommands(interaction as ChatInputCommandInteraction)
 })
 
 
