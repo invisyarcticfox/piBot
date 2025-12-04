@@ -13,12 +13,12 @@ export const client = new Client({
 
 
 client.once('clientReady', () => {
-  console.log(`Logged in as ${client.user?.username}.`)
+  console.log(`Logged in as ${client.user!.username}.`)
   client.user?.setPresence({
     activities: [{
       type: ActivityType.Custom,
       name: 'custom status',
-      state: `Online since ${botStart.slice(0,-3)}`
+      state: `Online since ${botStart.slice(0,-3)} UTC`
     }],
     status:'online'
   })
