@@ -4,7 +4,7 @@ import { userId } from '.'
 import { readSeenFile } from '../utils'
 
 
-export const serverCommands = [
+export const guildCommands = [
   new SlashCommandBuilder()
     .setName('restart')
     .setDescription('Restart PiBot')
@@ -14,7 +14,7 @@ export const serverCommands = [
       .setRequired(false)
     )
 ]
-export const guildCommands = [
+export const serverCommands = [
   new SlashCommandBuilder()
     .setName('stats')
     .setDescription('Lists the top 5 most frequent plane types')
@@ -26,7 +26,7 @@ export async function handleCommands(interaction:ChatInputCommandInteraction) {
   if (interaction.commandName === 'restart') {
     const allowedUsers = [userId]
     if (!allowedUsers.includes(interaction.user.id)) {
-      await interaction.reply({ content: 'fail', flags: MessageFlags.Ephemeral })
+      await interaction.reply({ content: 'You are not a whitelisted user.', flags: MessageFlags.Ephemeral })
       return
     }
 

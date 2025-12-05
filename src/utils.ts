@@ -1,7 +1,8 @@
 import { readFile } from 'fs/promises'
+import { join } from 'path'
 
 
-const filePth = '/home/lucas/scripts/jetspotter/data/seen.json'
+const filePth = join(process.cwd(), 'data/seen.json')
 
 export async function readSeenFile() {
   const raw = await readFile(filePth, 'utf-8')

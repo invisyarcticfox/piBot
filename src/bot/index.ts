@@ -4,13 +4,18 @@ import { handleCommands } from './commands'
 
 export const token = process.env.BOT_TOKEN
 export const guildId = '939964758805872650'
+export const channelId = '1392954356671975514'
 export const userId = '470193291053498369'
 export const botId = '1445620355711373436'
 export let lastOnline:string|null = null
 export const botStart = new Date(Date.now()).toLocaleString('en-GB', { timeZone: 'UTC' })
 
 export const client = new Client({
-  intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences ]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildPresences
+  ]
 })
 
 

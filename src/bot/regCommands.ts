@@ -15,10 +15,13 @@ const rest = new REST({ version: '10' }).setToken(token!);
       { body: serverCommands.map(cmd => cmd.toJSON()) }
     )
     console.log('Refreshed Global /slash commands!')
+    
+    console.log('Refreshing Server /slash commands.')
     await rest.put(
       Routes.applicationGuildCommands(botId!, guildId!),
       { body: guildCommands.map(cmd => cmd.toJSON()) }
     )
+    console.log('Refreshed Server /slash commands!')
   } catch (error) {
     console.error(error)
   }
