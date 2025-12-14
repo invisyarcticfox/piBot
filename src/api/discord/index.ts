@@ -1,5 +1,6 @@
 import { Router } from 'express'
-import { fetchMember, lastOnline, userId } from '../../bot'
+import { fetchMember, lastOnline } from '../../bot'
+import { userId } from '../../bot/config'
 
 export const discordRouter = Router()
 

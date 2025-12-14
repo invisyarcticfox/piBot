@@ -5,8 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "restart": "npm run build && sudo systemctl restart discordbot",
+    "restart": "sudo systemctl restart discordbot",
+    "restart:hard": "rm -rf ./dist && npm run build && npm run restart",
     "regcommands": "node dist/bot/regCommands.js"
   },
   "dependencies": {

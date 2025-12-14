@@ -1,12 +1,9 @@
 import 'dotenv/config'
 import { Client, GatewayIntentBits, ActivityType, type ChatInputCommandInteraction, type GuildMember } from 'discord.js'
-import { handleCommands } from './commands'
+import { commandsMap } from './commands'
+import { userId, guildId, token } from './config'
 
-export const token = process.env.BOT_TOKEN
-export const guildId = '939964758805872650'
-export const channelId = '1392954356671975514'
-export const userId = '470193291053498369'
-export const botId = '1445620355711373436'
+
 export let lastOnline:string|null = null
 export const botStart = new Date(Date.now()).toLocaleString('en-GB', { timeZone: 'UTC' })
 
@@ -45,7 +42,14 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return
-  await handleCommands(interaction as ChatInputCommandInteraction)
+  const command = commandsMap.get(interaction.commandName)
+  if (!command) return
+
+  try {
+    await command.execute(interaction as ChatInputCommandInteraction)
+  } catch (error) {
+    console.error(error)
+  }
 })
 
 

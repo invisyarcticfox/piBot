@@ -3,3 +3,4 @@
 /data
 .env
 package-lock.json
+src/env.d.ts

@@ -4,7 +4,7 @@ import { app } from './api'
 
 async function main() {
   await startBot()
-  app.listen(3621, () => console.log('Bot and API running on port 3621'))
+  app.listen(9002, () => console.log('Bot and API running on port 9002'))
 }
 
 main().catch(console.error)
