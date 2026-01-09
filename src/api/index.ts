@@ -6,5 +6,5 @@ export const app = express()
 app.use(express.json())
 
 
-app.use('/discord', discordRouter)
+app.use('/', discordRouter)
 app.use('/jetspotter', jetspotterRouter)

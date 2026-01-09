@@ -22,7 +22,5 @@ const rest = new REST({ version: '10' }).setToken(token!);
       { body: guildCommands.map(cmd => cmd.toJSON()) }
     )
     console.log('Refreshed Server /slash commands!')
-  } catch (error) {
-    console.error(error)
-  }
+  } catch (error) { console.error(error) }
 })()

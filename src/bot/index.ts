@@ -8,11 +8,7 @@ export let lastOnline:string|null = null
 export const botStart = new Date(Date.now()).toLocaleString('en-GB', { timeZone: 'UTC' })
 
 export const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildPresences
-  ]
+  intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences ]
 })
 
 

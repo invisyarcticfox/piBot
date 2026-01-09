@@ -1,12 +1,8 @@
-import {
-  SlashCommandBuilder,
-  ChatInputCommandInteraction,
-  SlashCommandOptionsOnlyBuilder,
-  SlashCommandSubcommandsOnlyBuilder
-} from 'discord.js'
+import { SlashCommandBuilder, ChatInputCommandInteraction, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord.js'
+import { EmoteName } from './jetspotter/routes/msg'
 
 
-export interface Command {
+export type Command = {
   data: SlashCommandBuilder|SlashCommandOptionsOnlyBuilder|SlashCommandSubcommandsOnlyBuilder
   scope: 'GUILD' | 'GLOBAL'
   execute(interation:ChatInputCommandInteraction):Promise<void>
@@ -17,10 +13,12 @@ export type jsRes = {
   embed: {
     color: string
     fields: { name:string, value:string, inline?:boolean }[]
-    image?: { url: string } | undefined
-    footer: { text: string }
+    image?: { url:string } | undefined
+    footer: { text:string }
   },
-  buttons: { adsbexchange: string, planespotters?: string|undefined }
+  buttons: [
+    { name: EmoteName, link:string|null, row:number }
+  ]
 }
 
 export type seenEntry = { reg:string, type:string, seenCount:number }
