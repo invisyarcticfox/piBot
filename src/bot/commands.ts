@@ -1,4 +1,4 @@
-import { Command } from './types'
+import { Command } from '@types'
 import { topCommand } from './commands/top'
 import { restartCommand } from './commands/restart'
 import { photographedCommand } from './commands/photographed'

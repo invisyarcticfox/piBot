@@ -1,6 +1,6 @@
 import { readFile } from 'fs/promises'
 import { join } from 'path'
-import { SeenFile } from './bot/types'
+import type { SeenFile } from './types'
 
 
 const filePth = join(process.cwd(), 'data/seen.json')

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js'
-import { readSeenFile } from '../../utils'
-import { Command } from '../types'
+import { readSeenFile } from '@utils'
+import { Command, SeenFile } from '@types'
 
 
 export const photographedCommand:Command = {
@@ -10,7 +10,7 @@ export const photographedCommand:Command = {
     .setDescription('Lists all planes that have photos'),
 
   async execute(interaction:ChatInputCommandInteraction) {
-    const data = await readSeenFile()
+    const data:SeenFile = await readSeenFile()
 
     const photoEntries = Object.values(data)
       .filter((entry) => entry.photographed)

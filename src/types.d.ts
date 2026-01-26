@@ -1,11 +1,26 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord.js'
-import { EmoteName } from './jetspotter/routes/msg'
+import { EmoteName } from './api/jetspotter/routes/msg'
 
 
-export type Command = {
+export interface Command {
   data: SlashCommandBuilder|SlashCommandOptionsOnlyBuilder|SlashCommandSubcommandsOnlyBuilder
-  scope: 'GUILD' | 'GLOBAL'
+  scope: 'GUILD'|'GLOBAL'
   execute(interation:ChatInputCommandInteraction):Promise<void>
+}
+
+export type SeenFile = {
+  [hex:string]: {
+    reg: string
+    callsign: string
+    type: string
+    operator: string
+    country: string
+    category?: string
+    seenCount: number
+    lastSeen: string
+    photographed?: boolean
+    photographer?: boolean
+  }
 }
 
 export type jsRes = {
@@ -16,11 +31,5 @@ export type jsRes = {
     image?: { url:string } | undefined
     footer: { text:string }
   },
-  buttons: [
-    { name: EmoteName, link:string|null, row:number }
-  ]
+  buttons: { name:EmoteName, link:string|null, row:number }[]
 }
-
-export type seenEntry = { reg:string, type:string, seenCount:number }
-export type seenData = Record<string, seenEntry>
-export type seenFileData = Record<string, { total:number, unique:Set<string> }>
