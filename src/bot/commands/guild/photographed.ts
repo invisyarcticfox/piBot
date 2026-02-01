@@ -3,8 +3,8 @@ import { readSeenFile } from '@utils'
 import { Command, SeenFile } from '@types'
 
 
-export const photographedCommand:Command = {
-  scope: 'GLOBAL',
+const photographedCommand:Command = {
+  scope: 'GUILD',
   data: new SlashCommandBuilder()
     .setName('photographed')
     .setDescription('Lists all planes that have photos'),
@@ -20,3 +20,5 @@ export const photographedCommand:Command = {
     await interaction.reply({ content: `**Photographed Entries (${photoEntries.length}):**\n${output}` })
   }
 }
+
+export default photographedCommand

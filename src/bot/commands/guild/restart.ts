@@ -3,7 +3,7 @@ import { exec } from 'child_process'
 import { Command } from '@types'
 
 
-export const restartCommand:Command = {
+const restartCommand:Command = {
   scope: 'GUILD',
   data: new SlashCommandBuilder()
     .setName('restart')
@@ -26,3 +26,5 @@ export const restartCommand:Command = {
     })
   }
 }
+
+export default restartCommand

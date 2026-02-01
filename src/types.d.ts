@@ -2,7 +2,7 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, SlashCommandOptionsOn
 import { EmoteName } from './api/jetspotter/routes/msg'
 
 
-export interface Command {
+export type Command = {
   data: SlashCommandBuilder|SlashCommandOptionsOnlyBuilder|SlashCommandSubcommandsOnlyBuilder
   scope: 'GUILD'|'GLOBAL'
   execute(interation:ChatInputCommandInteraction):Promise<void>
@@ -33,3 +33,5 @@ export type jsRes = {
   },
   buttons: { name:EmoteName, link:string|null, row:number }[]
 }
+
+export type gayStats = { [userId:string]:number }
