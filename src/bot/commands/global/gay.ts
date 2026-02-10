@@ -1,14 +1,14 @@
-import { SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js'
+import { MessageFlags, SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js'
 import type { Command } from '@types'
 import { readGayFile, writeGayFile } from '@utils'
+import { botId } from '@bot/config'
 
 
 const specifics:Record<number,string> = {
-  100: '<a:SUBLIME:1467302402016415940> <:NOWAY:1467316176945414344> !!!',
+  100: '<a:SUBLIME:1467302402016415940> <:NOWAY:1467316176945414344> <a:OOOO:1467883971521155143> !!!',
   99:  '<:Sadge:1467304431090401422> so close...',
   69:  '<:EZ:1467303756021371058> Nice.',
-  67:  '<:67:1467334369030181028> You\'re such a fat fucking chud.',
-  66:  'Execute Order 66... <a:66:1467564592438968340>',
+  67:  '<a:67:1467883796886982748> You\'re such a fat fucking chud.',
   64:  '<:steve:1467365242110607426> that\'s a whole stack of gay!',
   50:  '<:BiPride:1467302829994803241>',
   42:  '<a:Life:1467303155313147924>',
@@ -19,7 +19,6 @@ const specifics:Record<number,string> = {
 }
 
 const gayCommand:Command = {
-  scope: 'GLOBAL',
   data: new SlashCommandBuilder()
     .setName('gay')
     .setDescription('how gay are you?')
@@ -39,15 +38,23 @@ const gayCommand:Command = {
     const extra = specifics[percent] ?? ''
     let message:string
 
-    if (target) { message = `${sender} casts a ray! ${target} is **${percent}% gay!** ${extra}`
+    if (target && target.id === sender.id) {
+      await interaction.reply({ content: 'You can\'t ray yourself! smh' , flags: MessageFlags.Ephemeral })
+      return
+    } else if (target && target.id === botId) {
+      await interaction.reply({ content: 'Ray someone else. smh.', flags: MessageFlags.Ephemeral })
+      return
+    }
+    
+    if (target) { message = `${sender} casts a ray! <a:GAY:1467831355554660494> ${target} is **${percent}% gay!** ${extra}`
     } else { message = `${sender} is **${percent}% gay!** ${extra}` }
 
-    if (percent === 100) {
+    if (percent === 100 || percent === 50) {
       const stats = await readGayFile()
-      const trackUser = target?.id ?? sender.id
-      stats[trackUser] = (stats[trackUser] ?? 0) + 1
+      const user = target?.id ?? sender.id
+      const category = percent === 100 ? 'gay' : 'bi'
+      stats[category][user] = (stats[category][user] ?? 0) + 1
       await writeGayFile(stats)
-      console.log(`saved 100% gay entry for ${target?.username ?? sender.username}`)
     }
 
     await interaction.reply({ content:message })

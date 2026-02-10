@@ -4,13 +4,11 @@ import { Command } from '@types'
 
 
 const restartCommand:Command = {
-  scope: 'GUILD',
   data: new SlashCommandBuilder()
     .setName('restart')
-    .setDescription('Restart PiBot'),
+    .setDescription('Restart InvisyArcticBot'),
   
   async execute(interaction:ChatInputCommandInteraction) {
-    console.log('Received restart command.')
     console.log('Restarting..')
 
     interaction.client.user.setPresence({

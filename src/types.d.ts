@@ -4,8 +4,7 @@ import { EmoteName } from './api/jetspotter/routes/msg'
 
 export type Command = {
   data: SlashCommandBuilder|SlashCommandOptionsOnlyBuilder|SlashCommandSubcommandsOnlyBuilder
-  scope: 'GUILD'|'GLOBAL'
-  execute(interation:ChatInputCommandInteraction):Promise<void>
+  execute: (interation:ChatInputCommandInteraction) => Promise<void>
 }
 
 export type SeenFile = {
@@ -34,4 +33,8 @@ export type jsRes = {
   buttons: { name:EmoteName, link:string|null, row:number }[]
 }
 
-export type gayStats = { [userId:string]:number }
+export type gayStats = {
+  gay: Record<string,number>
+  bi: Record<string,number>
+  straight: Record<string,number>
+}

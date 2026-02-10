@@ -4,7 +4,6 @@ import { Command } from '@types'
 
 
 const topCommand:Command = {
-  scope: 'GUILD',
   data: new SlashCommandBuilder()
     .setName('top')
     .setDescription('Lists the top 5 most frequent entries by type, operator, or country')

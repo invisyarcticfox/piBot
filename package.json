@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc && tsc-alias",
-    "restart": "npm run build && sudo systemctl restart discordbot",
+    "restart": "rm -rf ./dist/ && npm run build && sudo systemctl restart discordbot",
     "regcommands": "node dist/bot/regCommands.js"
   },
   "dependencies": {

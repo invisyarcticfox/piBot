@@ -11,7 +11,7 @@ export async function getUser(_req:Request, res:Response) {
       name: member.user.globalName,
       username: member.user.username,
       status: member.presence?.status ?? 'offline',
-      lastOnline,
+      lastOnline: lastOnline.get(member.user.id) ?? null,
       avatar: member.user.displayAvatarURL({ size: 1024, extension: 'png' })
     })
   } catch (error) {

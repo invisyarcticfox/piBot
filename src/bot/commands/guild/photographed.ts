@@ -4,7 +4,6 @@ import { Command, SeenFile } from '@types'
 
 
 const photographedCommand:Command = {
-  scope: 'GUILD',
   data: new SlashCommandBuilder()
     .setName('photographed')
     .setDescription('Lists all planes that have photos'),

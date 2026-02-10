@@ -4,11 +4,15 @@ import { commandsMap } from './commands'
 import { userId, guildId, token } from './config'
 
 
-export let lastOnline:string|null = null
+export let lastOnline = new Map<string, string>()
 export const botStart = Date.now()
 
 export const client = new Client({
-  intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences ]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildPresences
+  ]
 })
 
 
@@ -28,14 +32,16 @@ client.once('clientReady', () => {
 })
 
 client.on('presenceUpdate', (oldPresence, newPresence) => {
+  const userId = newPresence.userId
+  const onlineStatuses = ['online', 'idle', 'dnd']
   const oldStatus = oldPresence?.status ?? 'offline'
-  const newStatus = newPresence?.status as string
-  const onlineStatuses = [ 'online', 'idle', 'dnd' ]
-  
+  const newStatus = newPresence.status ?? 'offline'
+
   if (onlineStatuses.includes(oldStatus) && !onlineStatuses.includes(newStatus)) {
-    lastOnline = new Date().toISOString()
-  } else if (!onlineStatuses.includes(oldStatus) && onlineStatuses.includes(newStatus)) {
-    lastOnline = null
+    lastOnline.set(userId, new Date().toISOString())
+  }
+  if (!onlineStatuses.includes(oldStatus) && onlineStatuses.includes(newStatus)) {
+    lastOnline.delete(userId)
   }
 })
 
