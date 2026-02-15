@@ -4,8 +4,8 @@
   "main": "dist/index.js",
   "type": "commonjs",
   "scripts": {
-    "build": "tsc && tsc-alias",
-    "restart": "rm -rf ./dist/ && npm run build && sudo systemctl restart discordbot",
+    "build": "rm -rf ./dist && tsc && tsc-alias",
+    "restart": "npm run build && sudo systemctl restart discordbot",
     "regcommands": "node dist/bot/regCommands.js"
   },
   "dependencies": {

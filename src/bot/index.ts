@@ -55,6 +55,36 @@ client.on('interactionCreate', async (interaction) => {
 })
 
 
+const channelMessageCache = new Map<string, { normalised:string, original:string, users:Set<string> }>()
+
+client.on('messageCreate', async (message) => {
+  if (!message.guild) return
+  if (message.author.bot) return
+
+  const channelId = message.channel.id
+  const content = message.content.trim()
+  if (!content) return
+
+  const normContent = content.toLowerCase()
+  const cached = channelMessageCache.get(channelId)
+
+  if (cached && cached.normalised === normContent) {
+    cached.users.add(message.author.id)
+
+    if (cached.users.size === 3) {
+      await message.channel.send(cached.original)
+      channelMessageCache.delete(channelId)
+    }
+  } else {
+    channelMessageCache.set(channelId, {
+      normalised: normContent,
+      original: content,
+      users: new Set([message.author.id])
+    })
+  }
+})
+
+
 export async function fetchMember(user:string=userId):Promise<GuildMember> {
   let guild = client.guilds.cache.get(guildId) || await client.guilds.fetch(guildId)
   let member = guild.members.cache.get(user) || await guild.members.fetch(user)

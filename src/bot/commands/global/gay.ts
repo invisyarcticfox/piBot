@@ -1,5 +1,5 @@
 import { MessageFlags, SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js'
-import type { Command } from '@types'
+import type { Command, gayStats } from '@types'
 import { readGayFile, writeGayFile } from '@utils'
 import { botId } from '@bot/config'
 
@@ -49,12 +49,23 @@ const gayCommand:Command = {
     if (target) { message = `${sender} casts a ray! <a:GAY:1467831355554660494> ${target} is **${percent}% gay!** ${extra}`
     } else { message = `${sender} is **${percent}% gay!** ${extra}` }
 
-    if (percent === 100 || percent === 50) {
+    if (percent === 100 || percent === 50 || percent === 0) {
       const stats = await readGayFile()
       const user = target?.id ?? sender.id
-      const category = percent === 100 ? 'gay' : 'bi'
+
+      let category:keyof gayStats
+      if (percent === 100) category = 'gay'
+      else if (percent === 50) category = 'bi'
+      else category = 'straight'
+
       stats[category][user] = (stats[category][user] ?? 0) + 1
       await writeGayFile(stats)
+    }
+
+    if (percent === 0 || percent === 67) {
+      const user = target ?? sender
+      const member = await interaction.guild!.members.fetch(user.id).catch(() => null)
+      if (member && member.moderatable) await member.timeout(10_000, `Rolled ${percent}% in /gay command`)
     }
 
     await interaction.reply({ content:message })
