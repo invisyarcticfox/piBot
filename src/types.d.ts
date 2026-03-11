@@ -38,3 +38,11 @@ export type gayStats = {
   bi: Record<string,number>
   straight: Record<string,number>
 }
+
+export type RepeatedMessageEntry = {
+  channelId: string
+  messageId: string
+  timestamp: number
+  content: string
+}
+export type RepeatedMessageFile = RepeatedMessageEntry[]

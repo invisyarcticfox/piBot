@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { REST } from '@discordjs/rest'
+import { REST } from 'discord.js'
 import { Routes } from 'discord-api-types/v10'
 import { globalSlashCommands, guildSlashCommands } from './commands'
 import { token, botId, guildId } from './config'

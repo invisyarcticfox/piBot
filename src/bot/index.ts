@@ -2,6 +2,7 @@ import 'dotenv/config'
 import { Client, GatewayIntentBits, ActivityType, type ChatInputCommandInteraction, type GuildMember } from 'discord.js'
 import { commandsMap } from './commands'
 import { userId, guildId, token } from './config'
+import { AddRepeatedMessage } from '~/utils'
 
 
 export let lastOnline = new Map<string, string>()
@@ -17,15 +18,13 @@ export const client = new Client({
 
 
 client.once('clientReady', () => {
-  const started = new Date(botStart)
-  const startTime = started.toLocaleString('en-GB', { timeZone:'UTC', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:false})
   console.log(`Logged in as ${client.user!.username}.`)
 
   client.user?.setPresence({
     activities: [{
       type: ActivityType.Custom,
       name: 'custom status',
-      state: `Online since ${startTime.replace(',','')} UTC`
+      state: 'I\'m up!'
     }],
     status:'online'
   })
@@ -72,7 +71,13 @@ client.on('messageCreate', async (message) => {
     cached.users.add(message.author.id)
 
     if (cached.users.size === 3) {
-      await message.channel.send(cached.original)
+      const sent = await message.channel.send(cached.original)
+      await AddRepeatedMessage({
+        channelId: sent.channel.id,
+        messageId: sent.id,
+        timestamp: Date.now(),
+        content: cached.original
+      })
       channelMessageCache.delete(channelId)
     }
   } else {

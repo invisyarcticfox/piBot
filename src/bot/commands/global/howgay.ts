@@ -1,8 +1,9 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js'
-import type { Command } from '@types'
-import { readGayFile } from '@utils'
+import type { Command } from '~/types'
+import { readGayFile } from '~/utils'
 
-const howGayCommand: Command = {
+
+const howGayCommand:Command = {
   data: new SlashCommandBuilder()
     .setName('howgay')
     .setDescription('how many gay are you?')

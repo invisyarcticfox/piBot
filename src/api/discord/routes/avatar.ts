@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
-import { fetchMember } from '@bot'
-import { userId } from '@bot/config'
+import { fetchMember } from '~/bot'
+import { userId } from '~/bot/config'
 
 
 export async function getAvatar(req:Request, res:Response) {

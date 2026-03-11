@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
-import { fetchMember, lastOnline } from '@bot'
-import { userId } from '@bot/config'
+import { fetchMember, lastOnline } from '~/bot'
+import { userId } from '~/bot/config'
 
 
 export async function getUser(_req:Request, res:Response) {

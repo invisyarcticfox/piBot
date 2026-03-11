@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express'
 import { EmbedBuilder, ButtonBuilder, ButtonStyle, TextChannel, ActionRowBuilder } from 'discord.js'
-import { client } from '@bot'
-import { channelId } from '@bot/config'
-import type { jsRes } from '@types'
+import { client } from '~/bot'
+import { channelId } from '~/bot/config'
+import type { jsRes } from '~/types'
 
 const emotes = {
   adsbexchange: '1452673789069627552',

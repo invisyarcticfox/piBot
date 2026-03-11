@@ -10,13 +10,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "paths": {
-      "@bot": [ "bot/index" ],
-      "@bot/*": [ "bot/*" ],
-      "@api/*": [ "api/*" ],
-      "@types": [ "types.d.ts" ],
-      "@utils": [ "utils.ts" ]
-    }
+    "paths": { "~/*": [ "*" ] },
   },
   "include": ["src/**/*"]
 }

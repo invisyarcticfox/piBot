@@ -1,7 +1,7 @@
 import process from 'process'
 import path from 'path'
 import { SlashCommandBuilder, type ChatInputCommandInteraction, AttachmentBuilder } from 'discord.js'
-import type { Command } from '@types'
+import type { Command } from '~/types'
 
 
 const hayCommand:Command = {

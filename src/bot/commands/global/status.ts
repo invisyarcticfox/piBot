@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction, version as djsVersion } from 'discord.js'
 import process from 'process'
-import type { Command } from '@types'
-import { botStart } from '@bot'
+import type { Command } from '~/types'
+import { botStart } from '~/bot'
 
 
 const statusCommand:Command = {

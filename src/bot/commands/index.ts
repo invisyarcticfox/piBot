@@ -1,6 +1,6 @@
 import { readdirSync } from 'fs'
 import path from 'path'
-import type { Command } from '@types'
+import type { Command } from '~/types'
 
 
 const globalCommands:Command[] = []

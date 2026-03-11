@@ -1,7 +1,7 @@
 import { MessageFlags, SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js'
-import type { Command, gayStats } from '@types'
-import { readGayFile, writeGayFile } from '@utils'
-import { botId } from '@bot/config'
+import type { Command, gayStats } from '~/types'
+import { readGayFile, writeGayFile } from '~/utils'
+import { botId } from '~/bot/config'
 
 
 const specifics:Record<number,string> = {

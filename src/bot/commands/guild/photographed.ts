@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js'
-import { readSeenFile } from '@utils'
-import { Command, SeenFile } from '@types'
+import { readSeenFile } from '~/utils'
+import { Command, SeenFile } from '~/types'
 
 
 const photographedCommand:Command = {

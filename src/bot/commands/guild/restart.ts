@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, MessageFlags, type ChatInputCommandInteraction, ActivityType } from 'discord.js'
 import { exec } from 'child_process'
-import { Command } from '@types'
+import { Command } from '~/types'
 
 
 const restartCommand:Command = {
@@ -10,12 +10,12 @@ const restartCommand:Command = {
   
   async execute(interaction:ChatInputCommandInteraction) {
     console.log('Restarting..')
-
-    interaction.client.user.setPresence({
-      activities: [{ type: ActivityType.Custom, name: 'Restarting... '}],
-      status: 'dnd'
-    }) 
     await interaction.reply({ content: 'Restarting bot...', flags: MessageFlags.Ephemeral })
+
+    // interaction.client.user.setPresence({
+    //   activities: [{ type: ActivityType.Custom, name: 'Restarting... '}],
+    //   status: 'dnd'
+    // }) 
     
     exec('npm run restart', (error:any, stdout:any, stderr:any) => {
       if (error) return console.error(error)
