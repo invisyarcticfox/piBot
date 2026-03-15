@@ -17,7 +17,7 @@ export async function postDiscMsg(req:Request, res:Response) {
   try {
     const { category, buttons, embed }:jsRes = req.body
     const channel = await client.channels.fetch(channelId) as TextChannel
-    const embeds = new EmbedBuilder({ ...embed, color: parseInt(embed.color.replace('#',''), 16) })
+    const embeds = new EmbedBuilder(embed)
 
     const rows:ButtonBuilder[][] = [[], []]
     buttons.forEach(btn => {

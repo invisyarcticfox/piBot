@@ -39,15 +39,19 @@ const gayCommand:Command = {
     let message:string
 
     if (target && target.id === sender.id) {
-      await interaction.reply({ content: 'You can\'t ray yourself! smh' , flags: MessageFlags.Ephemeral })
+      await interaction.reply({ content: 'You can\'t ray yourself! smh', flags: MessageFlags.Ephemeral })
       return
-    } else if (target && target.id === botId) {
+    }
+
+    if (target && target.id === botId) {
       await interaction.reply({ content: 'Ray someone else. smh.', flags: MessageFlags.Ephemeral })
       return
     }
-    
-    if (target) { message = `${sender} casts a ray! <a:GAY:1467831355554660494> ${target} is **${percent}% gay!** ${extra}`
-    } else { message = `${sender} is **${percent}% gay!** ${extra}` }
+
+    if (target) message = `${sender} casts a ray! <a:GAY:1467831355554660494> ${target} is **${percent}% gay!** ${extra}`
+    else message = `${sender} is **${percent}% gay!** ${extra}`
+
+    await interaction.reply({ content: message })
 
     if (percent === 100 || percent === 50 || percent === 0) {
       const stats = await readGayFile()
@@ -65,10 +69,12 @@ const gayCommand:Command = {
     if (percent === 0 || percent === 67) {
       const user = target ?? sender
       const member = await interaction.guild!.members.fetch(user.id).catch(() => null)
-      if (member && member.moderatable) await member.timeout(10_000, `Rolled ${percent}% in /gay command`)
-    }
 
-    await interaction.reply({ content:message })
+      if (member) {
+        console.log(`Timed out @${member.user.username} for 15 seconds.`)
+        await member.timeout(15_000, `Rolled ${percent}% in /gay command`)
+      }
+    }
   }
 }
 

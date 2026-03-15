@@ -25,7 +25,7 @@ export type SeenFile = {
 export type jsRes = {
   category: string
   embed: {
-    color: string
+    color: number
     fields: { name:string, value:string, inline?:boolean }[]
     image?: { url:string } | undefined
     footer: { text:string }
