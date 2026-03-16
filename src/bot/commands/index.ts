@@ -15,8 +15,8 @@ function load(scope:'global'|'guild') {
 
     const command:Command = require(path.join(dir, file)).default
 
-    if (scope === 'global') { globalCommands.push(command)
-    } else { guildCommands.push(command) }
+    if (scope === 'global') globalCommands.push(command)
+    else guildCommands.push(command)
   }
 }
 

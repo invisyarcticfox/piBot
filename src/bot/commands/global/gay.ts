@@ -68,12 +68,15 @@ const gayCommand:Command = {
 
     if (percent === 0 || percent === 67) {
       const user = target ?? sender
-      const member = await interaction.guild!.members.fetch(user.id).catch(() => null)
+      const member = await interaction.guild!.members.fetch(user.id)
 
-      if (member) {
-        console.log(`Timed out @${member.user.username} for 15 seconds.`)
-        await member.timeout(15_000, `Rolled ${percent}% in /gay command`)
+      if (member && !member.moderatable) {
+        console.log(`Cannot timeout @${member.user.username} due to role hierarchy.`)
+        return
       }
+
+      console.log(`Timed out @${member.user.username} for 15 seconds.`)
+      await member.timeout(15_000, `Rolled ${percent}% in /gay command`)
     }
   }
 }
