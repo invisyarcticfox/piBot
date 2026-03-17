@@ -3,5 +3,6 @@
 /dist
 /node_modules
 /src/assets/
+/src/bot/commands/guild/test.ts
 .env
 package-lock.json
