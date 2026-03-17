@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, MessageFlags, SlashCommandBuilder } from 'discord.js'
-import { getRandQuote } from '../../db/funcs'
+import { getRandQuote } from '../../../db/funcs'
 
 
 export default {

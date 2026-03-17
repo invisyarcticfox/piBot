@@ -4,27 +4,35 @@ import path from 'path'
 import { REST, Routes } from 'discord.js'
 import { env } from '../config'
 
-const rest = new REST({ version:'10' }).setToken(env.bot.token)
+function getCommandFiles(dir:string):string[] {
+  let results:string[] = []
 
+  for (const file of fs.readdirSync(dir)) {
+    const fullPath = path.join(dir, file)
+    const stat = fs.statSync(fullPath)
 
-const globalCommands: any[] = []
-const guildCommands: any[] = []
+    if (stat.isDirectory()) {
+      const indexTs = path.join(fullPath, 'index.ts')
+      const indexJs = path.join(fullPath, 'index.js')
 
-const globalPath = path.join(__dirname, 'global')
-for (const file of fs.readdirSync(globalPath).filter(f => f.endsWith('.ts') || f.endsWith('.js'))) {
-  const command = require(path.join(globalPath, file)).default
-  globalCommands.push(command.data.toJSON())
+      if (fs.existsSync(indexTs)) results.push(indexTs)
+      else if (fs.existsSync(indexJs)) results.push(indexJs)
+    } else if (file.endsWith('.ts') || file.endsWith('.js')) {
+      results.push(fullPath)
+    }
+  }
+
+  return results
 }
 
-const guildPath = path.join(__dirname, 'guild')
-for (const file of fs.readdirSync(guildPath).filter(f => f.endsWith('.ts') || f.endsWith('.js'))) {
-  const command = require(path.join(guildPath, file)).default
-  guildCommands.push(command.data.toJSON())
-}
+const rest = new REST({ version: '10' }).setToken(env.bot.token)
 
 
 ;(async () => {
   try {
+    const globalCommands = getCommandFiles(path.join(__dirname, 'global')).map(f => require(f).default.data.toJSON())
+    const guildCommands = getCommandFiles(path.join(__dirname, 'guild')).map(f => require(f).default.data.toJSON())
+
     console.log(`Deploying ${globalCommands.length} global commands`)
     await rest.put(Routes.applicationCommands(env.bot.id), { body: globalCommands })
 

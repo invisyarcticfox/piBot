@@ -1,6 +1,7 @@
 import process from 'process'
 import { SlashCommandBuilder, type ChatInputCommandInteraction, version as djsVersion } from 'discord.js'
 import { botStart } from '~/bot'
+import pkg from '../../../../package.json'
 
 
 export default {
@@ -10,10 +11,10 @@ export default {
 
   async execute(interaction:ChatInputCommandInteraction) {
     const message =
-      `**Bot Status**\n` +
       `Started: **<t:${Math.floor(botStart / 1000)}:R>**\n` +
+      `Bot Version: **${pkg.version}**\n` +
       `Node.js version: **${process.version}**\n` +
-      `Discord.js version: **${djsVersion}**\n`
+      `Discord.js version: **${djsVersion}**`
     await interaction.reply({ content: message })
   }
 }

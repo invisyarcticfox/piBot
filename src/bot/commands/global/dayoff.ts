@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js'
+import { SlashCommandBuilder, type ChatInputCommandInteraction, MessageFlags } from 'discord.js'
 
 
 export default {
@@ -12,6 +12,7 @@ export default {
 
     if (member && !member.moderatable) {
       console.log(`Cannot timeout ${member.user.username} due to role hierarchy.`)
+      await interaction.reply({ content: 'Cannot time you out due to role hierarchy.', flags: MessageFlags.Ephemeral })
       return
     }
 

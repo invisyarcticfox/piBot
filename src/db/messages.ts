@@ -6,13 +6,13 @@ const dataDir = path.resolve(process.cwd(), 'data')
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir)
 
 const dbPath = path.join(dataDir, 'messages.db')
-export const db = new Database(dbPath)
+export const msgDb = new Database(dbPath)
 
 
-db.pragma('journal_mode = WAL')
-db.pragma('synchronous = NORMAL')
+msgDb.pragma('journal_mode = WAL')
+msgDb.pragma('synchronous = NORMAL')
 
-db.exec(`
+msgDb.exec(`
   CREATE TABLE IF NOT EXISTS messages (
     guildId TEXT NOT NULL,
     channelId TEXT NOT NULL,

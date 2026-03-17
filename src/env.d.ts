@@ -4,5 +4,6 @@ declare namespace NodeJS {
     BOT_ID: string
     SERVER_ID: string
     OWNER_ID: string
+    JETSPOTTER_CHANNEL_ID: string
   }
 }

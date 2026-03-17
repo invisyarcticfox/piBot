@@ -1,13 +1,12 @@
 import 'dotenv/config'
 import fs from 'fs'
 import path from 'path'
-import { Client, Collection, MessageFlags } from 'discord.js'
+import { Client, Collection, MessageFlags, ActivityType } from 'discord.js'
 import { BotClient, BotCommand } from '../types'
 import { env } from './config'
-import { saveMessage, updateMessage, deleteMessage } from './db/funcs'
+import { saveMessage, updateMessage, deleteMessage } from '../db/funcs'
 
-
-const client = new Client({ intents: ['Guilds', 'GuildMembers', 'GuildPresences', 'GuildMessages', 'MessageContent'] }) as BotClient
+export const client = new Client({ intents: ['Guilds', 'GuildMembers', 'GuildPresences', 'GuildMessages', 'MessageContent'] }) as BotClient
 client.commands = new Collection<string, BotCommand>()
 const commandsPath = path.join(__dirname, 'commands')
 const folders = ['global', 'guild']
@@ -30,7 +29,18 @@ for (const folder of folders) {
 export const botStart = Date.now()
 
 
-client.once('clientReady', () => { console.log(`Logged in as ${client.user?.tag}!`) })
+client.once('clientReady', () => {
+  console.log(`Logged in as ${client.user!.username}.`)
+
+  client.user?.setPresence({
+    activities: [{
+      type: ActivityType.Custom,
+      name: 'custom status',
+      state: 'I\'m up!'
+    }],
+    status:'online'
+  })
+})
 
 client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return
@@ -46,9 +56,44 @@ client.on('interactionCreate', async interaction => {
   }
 })
 
-client.on('messageCreate', (msg) => { if (!msg.author?.bot) saveMessage(msg) })
+export let lastOnline:string|null = null
+client.on('presenceUpdate', (oldPresence, newPresence) => {
+  if (newPresence.userId !== env.owner.id) return
+
+  const onlineStatuses = ['online', 'idle', 'dnd']
+
+  const oldStatus = oldPresence?.status ?? 'offline'
+  const newStatus = newPresence.status ?? 'offline'
+
+  if (onlineStatuses.includes(oldStatus) && !onlineStatuses.includes(newStatus)) lastOnline = new Date().toISOString()
+  if (!onlineStatuses.includes(oldStatus) && onlineStatuses.includes(newStatus)) lastOnline = null
+})
+
+const channelMsgCache = new Map<string, { normalised: string; original: string; users: Set<string> }>()
+client.on('messageCreate', async (msg) => {
+  if (!msg.guild) return
+  if (!msg.author || msg.author.bot) return
+
+  const content = msg.content.trim()
+  if (!content) return
+
+  saveMessage(msg)
+
+  const channelId = msg.channel.id
+  const normContent = content.toLowerCase()
+  const cached = channelMsgCache.get(channelId)
+
+  if (cached && cached.normalised === normContent) {
+    cached.users.add(msg.author.id)
+    if (cached.users.size === 3) {
+      channelMsgCache.delete(channelId)
+      try { await msg.channel.send(cached.original)
+      } catch (error) { console.error(error) }
+    }
+  } else { channelMsgCache.set(channelId, { normalised: normContent, original: content, users: new Set([msg.author.id]) }) }
+})
 client.on('messageUpdate', (_oldMsg, newMsg) => { if (!newMsg.author?.bot) updateMessage(newMsg) })
-client.on('messageDelete', (msg) => { deleteMessage(msg) })
+client.on('messageDelete', (msg) => deleteMessage(msg) )
 
 
 export async function startBot() { await client.login(env.bot.token) }

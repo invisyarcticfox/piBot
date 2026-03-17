@@ -1,14 +1,14 @@
 import { Message, PartialMessage } from 'discord.js'
 import { MessageRow } from '~/types'
-import { db } from '.'
+import { msgDb } from './messages'
 
-const insertMessage = db.prepare(`
+const insertMessage = msgDb.prepare(`
   INSERT OR IGNORE INTO messages
     (guildId, channelId, messageId, userId, content, timestamp, repliedUser)
   VALUES (?, ?, ?, ?, ?, ?, ?)
 `)
-const deleteMessageStmt = db.prepare(`DELETE FROM messages WHERE messageId = ?`)
-const updateMessageStmt = db.prepare(`UPDATE messages SET content = ? WHERE messageId = ?`)
+const deleteMessageStmt = msgDb.prepare(`DELETE FROM messages WHERE messageId = ?`)
+const updateMessageStmt = msgDb.prepare(`UPDATE messages SET content = ? WHERE messageId = ?`)
 
 
 export function saveMessage(message:Message) {
@@ -54,20 +54,16 @@ function formatMsgContent(message:Message):string|null {
 
 export function getRandQuote(userId?:string):MessageRow|undefined {
   if (userId) {
-    const ids = db
-      .prepare(`SELECT messageId FROM messages WHERE userId = ?`)
-      .all(userId) as { messageId:string }[]
+    const ids = msgDb.prepare(`SELECT messageId FROM messages WHERE userId = ?`).all(userId) as { messageId:string }[]
     if (!ids.length) return undefined
 
     const randomId = ids[Math.floor(Math.random() * ids.length)].messageId
-    return db.prepare(`SELECT * FROM messages WHERE messageId = ?`).get(randomId) as MessageRow
+    return msgDb.prepare(`SELECT * FROM messages WHERE messageId = ?`).get(randomId) as MessageRow
   } else {
-    const ids = db
-      .prepare(`SELECT messageId FROM messages`)
-      .all() as { messageId:string }[]
+    const ids = msgDb.prepare(`SELECT messageId FROM messages`).all() as { messageId:string }[]
     if (!ids.length) return undefined
 
     const randomId = ids[Math.floor(Math.random() * ids.length)].messageId
-    return db.prepare(`SELECT * FROM messages WHERE messageId = ?`).get(randomId) as MessageRow
+    return msgDb.prepare(`SELECT * FROM messages WHERE messageId = ?`).get(randomId) as MessageRow
   }
 }
