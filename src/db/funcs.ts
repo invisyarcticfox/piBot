@@ -11,10 +11,7 @@ const deleteMessageStmt = msgDb.prepare(`DELETE FROM messages WHERE messageId = 
 const updateMessageStmt = msgDb.prepare(`UPDATE messages SET content = ? WHERE messageId = ?`)
 
 
-export function saveMessage(message:Message) {
-  const content = formatMsgContent(message)
-  if (!content) return
-
+export function saveMessage(message:Message, content:string) {
   const repliedUser = message.mentions?.repliedUser?.id ?? null
   const guildId = message.guild?.id ?? null
 
@@ -40,16 +37,15 @@ export function updateMessage(message:Message) {
 }
 
 
-function formatMsgContent(message:Message):string|null {
+export function formatMsgContent(message:Message):string|null {
   let content = message.cleanContent?.trim() || ''
 
   const attachments = [...message.attachments.values()].map(a => a.url.split('?ex=')[0])
-  if (attachments.length === 0) return content || null
 
-  const attachmentText = attachments.join(' ')
-  if (!content) return attachmentText
+  if (!content && attachments.length === 0) return null
+  if (attachments.length === 0) return content
 
-  return `${content} ${attachmentText}`
+  return content ? `${content} ${attachments.join(' ')}` : attachments.join(' ')
 }
 
 export function getRandQuote(userId?:string):MessageRow|undefined {

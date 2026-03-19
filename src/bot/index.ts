@@ -4,7 +4,8 @@ import path from 'path'
 import { Client, Collection, MessageFlags, ActivityType } from 'discord.js'
 import { BotClient, BotCommand } from '../types'
 import { env } from './config'
-import { saveMessage, updateMessage, deleteMessage } from '../db/funcs'
+import { saveMessage, updateMessage, deleteMessage, formatMsgContent } from '../db/funcs'
+import { isWhitelisted } from '~/utils'
 
 export const client = new Client({ intents: ['Guilds', 'GuildMembers', 'GuildPresences', 'GuildMessages', 'MessageContent'] }) as BotClient
 client.commands = new Collection<string, BotCommand>()
@@ -69,18 +70,20 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
   if (!onlineStatuses.includes(oldStatus) && onlineStatuses.includes(newStatus)) lastOnline = null
 })
 
-const channelMsgCache = new Map<string, { normalised: string; original: string; users: Set<string> }>()
+const channelMsgCache = new Map<string, { normalised:string; original:string; users:Set<string> }>()
 client.on('messageCreate', async (msg) => {
-  if (!msg.guild) return
+  if (!msg.inGuild()) return
   if (!msg.author || msg.author.bot) return
 
-  const content = msg.content.trim()
-  if (!content) return
+  const parentId = msg.channel.isThread() ? msg.channel.parent?.parentId ?? null : 'parentId' in msg.channel ? msg.channel.parentId : null
+  if (!isWhitelisted(msg.guild.id, msg.channel.id, parentId)) return
 
-  saveMessage(msg)
+  const formatted = formatMsgContent(msg)
+  if (!formatted) return
+  saveMessage(msg, formatted)
 
   const channelId = msg.channel.id
-  const normContent = content.toLowerCase()
+  const normContent = formatted.toLowerCase()
   const cached = channelMsgCache.get(channelId)
 
   if (cached && cached.normalised === normContent) {
@@ -90,7 +93,7 @@ client.on('messageCreate', async (msg) => {
       try { await msg.channel.send(cached.original)
       } catch (error) { console.error(error) }
     }
-  } else { channelMsgCache.set(channelId, { normalised: normContent, original: content, users: new Set([msg.author.id]) }) }
+  } else { channelMsgCache.set(channelId, { normalised:normContent, original:formatted, users:new Set([msg.author.id]) }) }
 })
 client.on('messageUpdate', (_oldMsg, newMsg) => { if (!newMsg.author?.bot) updateMessage(newMsg) })
 client.on('messageDelete', (msg) => deleteMessage(msg) )

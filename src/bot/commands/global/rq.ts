@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, MessageFlags, SlashCommandBuilder } from 'discord.js'
-import { getRandQuote } from '../../../db/funcs'
+import { getRandQuote } from '~/db/funcs'
 
 
 export default {
@@ -46,12 +46,12 @@ export default {
     if (quote.repliedUser) {
       try {
         const repliedUser = await interaction.client.users.fetch(quote.repliedUser)
-        repliedText = `*@${repliedUser.username}*`
+        repliedText = ` *@${repliedUser.username}*`
       } catch { repliedText = `*Unknown* ` }
     }
 
     const timestamp = Math.floor(quote.timestamp / 1000)
-    const output = `<t:${timestamp}:R> @${username}: ${repliedText} ${quote.content}`
+    const output = `<t:${timestamp}:R> @${username}:${repliedText} ${quote.content}`
 
     await interaction.reply(output)
   }

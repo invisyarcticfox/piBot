@@ -3,7 +3,7 @@ import { app } from './api'
 
 async function main() {
   await startBot()
-  app.listen(9008 ,() => console.log('Express API running on http://raspi:9008'))
+  app.listen(9002 ,() => console.log('Express API running on http://raspi:9002'))
 }
 
 main().catch(console.error)
