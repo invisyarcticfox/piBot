@@ -1,4 +1,4 @@
-export interface MessageRow {
+export type MessageRow = {
   messageId: string
   guildId: string
   channelId: string
@@ -8,12 +8,7 @@ export interface MessageRow {
   repliedUser: string|null
 }
 
-export type gayStats = {
-  gay: Record<string,number>
-  bi: Record<string,number>
-  straight: Record<string,number>
-}
-
+export type gayStats = Record<number, Record<string, number>>
 
 export type Whitelist = {
   guilds: {
@@ -21,4 +16,18 @@ export type Whitelist = {
     categories?: string[]
     channels?: string[]
   }[]
+}
+
+export type Jetspotter = {
+  hex: string
+  reg: string
+  callsign: string
+  type: string
+  operator: string
+  country: string
+  category: string
+  seenCount: string
+  lastSee: string
+  photographed: string
+  photographer: string
 }

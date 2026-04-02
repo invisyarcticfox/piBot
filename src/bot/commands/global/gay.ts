@@ -5,7 +5,7 @@ import { env } from '~/bot/config'
 
 
 const specifics:Record<number,string> = {
-  100: '<a:SUBLIME:1467302402016415940> <:NOWAY:1467316176945414344> <a:OOOO:1467883971521155143> !!!',
+  100: '<a:SUBLIME:1467302402016415940> <:NOWAY:1484274336084005107> <a:OOOO:1467883971521155143> !!!',
   99:  '<:Sadge:1467304431090401422> so close...',
   69:  '<:EZ:1467303756021371058> Nice.',
   67:  '<a:67:1467883796886982748> You\'re such a fat fucking chud.',
@@ -52,16 +52,12 @@ export default {
 
     await interaction.reply({ content: message })
 
-    if (percent === 100 || percent === 50 || percent === 0) {
-      const stats = await readGayFile()
+    if ([100, 69, 67, 50, 0].includes(percent)) {
+      const stats:gayStats = await readGayFile()
       const user = target?.id ?? sender.id
 
-      let category:keyof gayStats
-      if (percent === 100) category = 'gay'
-      else if (percent === 50) category = 'bi'
-      else category = 'straight'
-
-      stats[category][user] = (stats[category][user] ?? 0) + 1
+      if (!stats[percent]) stats[percent] = {}
+      stats[percent][user] = (stats[percent][user] ?? 0) + 1
       await writeGayFile(stats)
     }
 

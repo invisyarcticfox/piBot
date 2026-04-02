@@ -4,7 +4,7 @@ import path from 'path'
 import { Client, Collection, MessageFlags, ActivityType } from 'discord.js'
 import { BotClient, BotCommand } from '../types'
 import { env } from './config'
-import { saveMessage, updateMessage, deleteMessage, formatMsgContent } from '../db/funcs'
+import { saveMessage, updateMessage, deleteMessage, formatMsgContent } from '~/db/funcs'
 import { isWhitelisted } from '~/utils'
 
 export const client = new Client({ intents: ['Guilds', 'GuildMembers', 'GuildPresences', 'GuildMessages', 'MessageContent'] }) as BotClient

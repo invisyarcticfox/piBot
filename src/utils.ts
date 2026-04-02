@@ -10,7 +10,7 @@ export async function readGayFile():Promise<gayStats> {
   try {
     const raw = await readFile(gayData, 'utf-8')
     return JSON.parse(raw)
-  } catch (error) { return { gay:{}, bi:{}, straight:{} }  }
+  } catch (error) { return {}  }
 }
 export async function writeGayFile(stats:gayStats) {
   try {

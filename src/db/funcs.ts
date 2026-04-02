@@ -48,18 +48,29 @@ export function formatMsgContent(message:Message):string|null {
   return content ? `${content} ${attachments.join(' ')}` : attachments.join(' ')
 }
 
-export function getRandQuote(userId?:string):MessageRow|undefined {
+export function getRandQuote(userId?:string, timeframe?:{ start?:number; end?:number }):MessageRow|undefined {
+  let query = `SELECT * FROM messages`
+  const conditions: string[] = []
+  const params: any[] = []
+
   if (userId) {
-    const ids = msgDb.prepare(`SELECT messageId FROM messages WHERE userId = ?`).all(userId) as { messageId:string }[]
-    if (!ids.length) return undefined
-
-    const randomId = ids[Math.floor(Math.random() * ids.length)].messageId
-    return msgDb.prepare(`SELECT * FROM messages WHERE messageId = ?`).get(randomId) as MessageRow
-  } else {
-    const ids = msgDb.prepare(`SELECT messageId FROM messages`).all() as { messageId:string }[]
-    if (!ids.length) return undefined
-
-    const randomId = ids[Math.floor(Math.random() * ids.length)].messageId
-    return msgDb.prepare(`SELECT * FROM messages WHERE messageId = ?`).get(randomId) as MessageRow
+    conditions.push(`userId = ?`)
+    params.push(userId)
   }
+
+  if (timeframe?.start) {
+    conditions.push(`timestamp >= ?`)
+    params.push(timeframe.start)
+  }
+
+  if (timeframe?.end) {
+    conditions.push(`timestamp <= ?`)
+    params.push(timeframe.end)
+  }
+
+  if (conditions.length) query += ` WHERE ` + conditions.join(' AND ')
+
+  query += ` ORDER BY RANDOM() LIMIT 1`
+
+  return msgDb.prepare(query).get(...params) as MessageRow | undefined
 }
