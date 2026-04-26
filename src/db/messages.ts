@@ -17,7 +17,7 @@ msgDb.exec(`
     guildId TEXT NOT NULL,
     channelId TEXT NOT NULL,
     messageId TEXT PRIMARY KEY NOT NULL,
-    userId TEXT NOT NULL NOT NULL,
+    userId TEXT NOT NULL,
     content TEXT,
     timestamp INTEGER NOT NULL,
     repliedUser TEXT
@@ -27,4 +27,12 @@ msgDb.exec(`
   CREATE INDEX IF NOT EXISTS idx_user ON messages(userId);
   CREATE INDEX IF NOT EXISTS idx_timestamp ON messages(timestamp);
   CREATE INDEX IF NOT EXISTS idx_user_timestamp ON messages(userId, timestamp);
+`)
+
+msgDb.exec(`
+  CREATE TABLE IF NOT EXISTS roulette (
+    userId TEXT PRIMARY KEY NOT NULL,
+    msgCount INTEGER NOT NULL DEFAULT 0,
+    points INTEGER NOT NULL DEFAULT 1000
+  );
 `)

@@ -10,6 +10,14 @@ const insertMessage = msgDb.prepare(`
 const deleteMessageStmt = msgDb.prepare(`DELETE FROM messages WHERE messageId = ?`)
 const updateMessageStmt = msgDb.prepare(`UPDATE messages SET content = ? WHERE messageId = ?`)
 
+const incrementRoulette = msgDb.prepare(`
+  INSERT INTO roulette (userId, msgCount, points)
+  VALUES (?, 1, 1)
+  ON CONFLICT(userId) DO UPDATE SET
+    msgCount = msgCount + 1,
+    points = points + 1
+`)
+
 
 export function saveMessage(message:Message, content:string) {
   const repliedUser = message.mentions?.repliedUser?.id ?? null
@@ -24,6 +32,8 @@ export function saveMessage(message:Message, content:string) {
     message.createdTimestamp,
     repliedUser ? repliedUser : null
   )
+
+  incrementRoulette.run(message.author.id)
 }
 
 export function deleteMessage(message:Message|PartialMessage) {

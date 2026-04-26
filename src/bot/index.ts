@@ -4,9 +4,10 @@ import path from 'path'
 import { Client, Collection, MessageFlags, ActivityType } from 'discord.js'
 import { BotClient, BotCommand } from '../types'
 import { env } from './config'
-import { saveMessage, updateMessage, deleteMessage, formatMsgContent } from '~/db/funcs'
+import { saveMessage, updateMessage, deleteMessage } from '~/db/funcs'
 import { isWhitelisted } from '~/utils'
 
+export const botStart = Date.now()
 export const client = new Client({ intents: ['Guilds', 'GuildMembers', 'GuildPresences', 'GuildMessages', 'MessageContent'] }) as BotClient
 client.commands = new Collection<string, BotCommand>()
 const commandsPath = path.join(__dirname, 'commands')
@@ -19,15 +20,16 @@ for (const folder of folders) {
   for (const file of commandFiles) {
     const filePath = path.join(folderPath, file)
     const command = require(filePath).default as BotCommand
+
     if (!command?.data || !command?.execute) {
       console.warn(`Invalid command file: ${filePath}`)
       continue
     }
+
+    (command as any).scope = folder
     client.commands.set(command.data.name, command)
   }
 }
-
-export const botStart = Date.now()
 
 
 client.once('clientReady', () => {
@@ -71,6 +73,13 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 })
 
 const channelMsgCache = new Map<string, { normalised:string; original:string; users:Set<string> }>()
+function filterEmojis(content:string, guild:any) {
+  return content.replace(/<a?:([a-zA-Z0-9_]+):(\d+)>/g, (_, name, id) => {
+    const emoji = guild.emojis.cache.get(id)
+    return emoji ? `<${emoji.animated ? 'a' : ''}:${emoji.name}:${emoji.id}>` : `:${name}:`
+  })
+}
+
 client.on('messageCreate', async (msg) => {
   if (!msg.inGuild()) return
   if (!msg.author || msg.author.bot) return
@@ -78,12 +87,16 @@ client.on('messageCreate', async (msg) => {
   const parentId = msg.channel.isThread() ? msg.channel.parent?.parentId ?? null : 'parentId' in msg.channel ? msg.channel.parentId : null
   if (!isWhitelisted(msg.guild.id, msg.channel.id, parentId)) return
 
-  const formatted = formatMsgContent(msg)
+  let content = msg.content?.trim() || ''
+  if (msg.inGuild()) content = filterEmojis(content, msg.guild)
+
+  const attachments = [...msg.attachments.values()].map(a => a.url.split('?ex=')[0])
+  const formatted = content ? attachments.length ? `${content} ${attachments.join(' ')}` : content : attachments.join(' ')
   if (!formatted) return
   saveMessage(msg, formatted)
 
   const channelId = msg.channel.id
-  const normContent = formatted.toLowerCase()
+  const normContent = formatted.toLowerCase().replace(/<a?:([a-zA-Z0-9_]+):(\d+)>/g, (_, name) => `:${name}:`)
   const cached = channelMsgCache.get(channelId)
 
   if (cached && cached.normalised === normContent) {
@@ -93,7 +106,13 @@ client.on('messageCreate', async (msg) => {
       try { await msg.channel.send(cached.original)
       } catch (error) { console.error(error) }
     }
-  } else { channelMsgCache.set(channelId, { normalised:normContent, original:formatted, users:new Set([msg.author.id]) }) }
+  } else {
+    channelMsgCache.set(channelId, {
+      normalised: normContent,
+      original: formatted,
+      users: new Set([msg.author.id])
+    })
+  }
 })
 client.on('messageUpdate', (_oldMsg, newMsg) => { if (!newMsg.author?.bot) updateMessage(newMsg) })
 client.on('messageDelete', (msg) => deleteMessage(msg) )
