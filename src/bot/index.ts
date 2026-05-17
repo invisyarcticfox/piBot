@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import fs from 'fs'
 import path from 'path'
-import { Client, Collection, MessageFlags, ActivityType } from 'discord.js'
+import { Client, Collection, MessageFlags, ActivityType, EmbedBuilder } from 'discord.js'
 import { BotClient, BotCommand } from '../types'
 import { env } from './config'
 import { saveMessage, updateMessage, deleteMessage } from '~/db/funcs'
@@ -46,8 +46,33 @@ client.once('clientReady', () => {
 })
 
 client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return
+  if (interaction.isButton()) {
+    try {
+      const [ action, id ] = interaction.customId.split(':')
+      const approved = action === 'gb-approve'
+      const deleted = action === 'gb-deny'
 
+      const res = await fetch(`https://itafdotuk.invisyarcticfox.workers.dev/api/guestbook/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type' : 'application/json',
+          'Authorization': env.cloudflare.guestbook.auth
+        },
+        body: JSON.stringify({ approved, deleted })
+      })
+      if (!res.ok) return interaction.reply({ content: `Guestbook PATCH request failed ${res.statusText}`, flags: MessageFlags.Ephemeral })
+
+      const embed =  EmbedBuilder.from(interaction.message.embeds[0]).setColor(approved ?  0x008545 : 0xd22d39)
+      await interaction.update({ embeds: [embed], components: [] })
+    } catch (error) {
+      console.error(error)
+      if (!interaction.replied && interaction.deferred) await interaction.reply({ content: 'Interaction failed', flags: MessageFlags.Ephemeral })
+      return
+    }
+  }
+
+
+  if (!interaction.isChatInputCommand()) return
   const command = client.commands.get(interaction.commandName)
   if (!command) return
 
@@ -64,7 +89,6 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
   if (newPresence.userId !== env.owner.id) return
 
   const onlineStatuses = ['online', 'idle', 'dnd']
-
   const oldStatus = oldPresence?.status ?? 'offline'
   const newStatus = newPresence.status ?? 'offline'
 

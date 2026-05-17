@@ -1,6 +1,5 @@
 import { Router } from 'express'
-import { getAvatar } from './routes/avatar'
-import { getUser } from './routes/user'
+import { getUser, getAvatar } from './routes'
 
 export const discordRouter = Router()
 

@@ -8,3 +8,28 @@ export type jsRes = {
   },
   buttons: { name:EmoteName, link:string|null, row:number }[]
 }
+
+export type GbRes = {
+  id: string
+  name: string|null
+  message: string
+  timestamp: string
+}
+
+export type vrcRes = {
+  checkedAt: string
+  group: {
+    id: string
+    name: string
+    iconUrl: string
+    onlineMembers: number
+    totalMembers: number
+  }
+  instances: {
+    worldId: string
+    worldName: string
+    instanceId: string
+    userCount: number
+    capacity: number
+  }[]
+}
