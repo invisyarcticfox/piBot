@@ -9,68 +9,28 @@ export default {
     .addUserOption(option =>
       option
         .setName('user')
-        .setDescription('how many gay is this person?')
-        .setRequired(false)
-    )
-    .addBooleanOption(option =>
-      option
-        .setName('top')
-        .setDescription('show top users')
+        .setDescription('how gay is this person?')
         .setRequired(false)
     )
     .addIntegerOption(option =>
       option
         .setName('percent')
-        .setDescription('which percent to view')
+        .setDescription('how gay to view')
         .setRequired(false)
         .addChoices(
           { name: '100% gay', value: 100 },
-          { name: '69% gay', value: 69 },
-          { name: '67% gay', value: 67 },
           { name: '50% gay', value: 50 },
           { name: '0% gay', value: 0 }
         )
-    )
-    .addIntegerOption(option =>
-      option
-        .setName('count')
-        .setDescription('how many gays to return?')
-        .setRequired(false)
-        .setMinValue(5)
-        .setMaxValue(30)
     ),
 
-  async execute(interaction:ChatInputCommandInteraction) {
+  async execute(interaction: ChatInputCommandInteraction) {
     const stats = await readGayFile()
     const sender = interaction.user
-    const userOpt = interaction.options.getUser('user')
-    const topOpt = interaction.options.getBoolean('top')
-    const countOpt = interaction.options.getInteger('count')
-
+    const target = interaction.options.getUser('user') ?? sender
     const percent = interaction.options.getInteger('percent') ?? 100
     const categoryStats = stats[percent] ?? {}
-
-    if (topOpt) {
-      const sorted = Object.entries(categoryStats).sort(([,a],[,b]) => b - a).slice(0, countOpt ?? 5)
-      if (sorted.length === 0) {
-        await interaction.reply({ content: `No users recorded for ${percent} yet..` })
-        return
-      }
-
-      const lines = await Promise.all(
-        sorted.map(async ([id, amount], i) => {
-          const user = await interaction.client.users.fetch(id).catch(() => null)
-          const name = user?.username ?? 'Unknown'
-          return `${i + 1}. ${name} is **${percent}% gay** x${amount}`
-        })
-      )
-
-      const message = `**Top ${sorted.length} users (${percent}% gay)**\n${lines.join('\n')}`
-      await interaction.reply({ content:message })
-    } else {
-      const target = userOpt ?? sender
-      const amount = categoryStats[target.id] ?? 0
-      await interaction.reply({ content: `${target} is **${percent}% gay** x${amount}` })
-    }
+    const amount = categoryStats[target.id] ?? 0
+    await interaction.reply({ content: `${target} is **${percent}% gay** x${amount}` })
   }
 }
