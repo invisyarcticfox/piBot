@@ -1,0 +1,6 @@
+/config
+/data
+/dist
+/node_modules
+.env
+package-lock.json
