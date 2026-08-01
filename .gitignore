@@ -2,5 +2,6 @@
 /data
 /dist
 /node_modules
+/src/bot/assets/
 .env
 package-lock.json
