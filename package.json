@@ -1,26 +1,24 @@
 {
   "name": "discordbot",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "dist/index.js",
   "type": "commonjs",
   "scripts": {
-    "build": "tsc && tsc-alias && npm run build:web",
-    "build:web": "cpx \"src/web/public/*\" dist/web",
+    "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "restart": "npm run build && sudo systemctl restart discordbot",
     "deploy": "tsx src/bot/commands/deploy.ts"
   },
   "dependencies": {
-    "better-sqlite3": "^12.11.1",
-    "discord.js": "^14.26.5",
+    "better-sqlite3": "^13.0.2",
+    "discord.js": "^14.27.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
+    "@types/better-sqlite3": "^9.6.0",
     "@types/express": "^5.0.6",
-    "@types/node": "^26.1.1",
-    "cpx": "^1.5.0",
+    "@types/node": "^26.1.2",
     "tsc-alias": "^1.9.1",
     "tsx": "^4.23.1",
     "typescript": "^7.0.2"
